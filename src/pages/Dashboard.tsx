@@ -13,6 +13,8 @@ import { localDateISO } from '../lib/date'
 import { listWeights } from '../lib/weight-log'
 import { WEIGHT } from '../lib/program'
 import type { ActivityLog, Exercise, WeightLog } from '../lib/types'
+import { BREAKFASTS, DINNERS, MEALS_SCHEDULE } from '../data/meals'
+import type { Weekday } from '../lib/program'
 import StatsHeader from '../components/StatsHeader'
 import ActivityCard from '../components/ActivityCard'
 
@@ -70,6 +72,9 @@ export default function Dashboard() {
   }
 
   const todayActivities = activitiesForDate(today)
+  const todayMealsPlan = MEALS_SCHEDULE[new Date(today + 'T00:00:00').getDay() as Weekday]
+  const todayBreakfast = BREAKFASTS[todayMealsPlan.breakfast]
+  const todayDinner = DINNERS[todayMealsPlan.dinner]
   const weekStart = weekStartISO(today)
   const inWeek = (dateStr: string) => dateStr >= weekStart && dateStr <= today
 
@@ -143,6 +148,17 @@ export default function Dashboard() {
           </span>
         </div>
       </div>
+
+      {/* Meals nav */}
+      <button
+        onClick={() => navigate('/meals')}
+        className="w-full bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between active:scale-95 transition-transform"
+      >
+        <span className="text-lg">🍽️ Meals</span>
+        <span className="text-xs text-text-dim">
+          {todayBreakfast.name} + {todayDinner.name}
+        </span>
+      </button>
 
       {/* TODAY section — all activities always shown; today's are highlighted, the
           rest are dimmed "optional" so you can always do extra. */}
